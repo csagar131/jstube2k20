@@ -1,0 +1,23 @@
+#cards-wrapper{
+    display: flex;
+    flex-wrap : wrap;
+    justify-content:center;
+  }
+  
+  .card{
+    margin:10px;
+    width: 24%;
+    height:250px;
+    box-shadow : 3px 3px 2px #ccc;
+    padding:1px;
+    border-radius : 6px;
+    box-sizing: border-box; 
+  }
+  
+  .thumbnail{
+    border-radius : 5px;
+    width: 100%;
+    display:block;
+  }
+  
+  
