@@ -1,0 +1,10 @@
+body{
+    margin: 0;
+}
+
+#main-div{
+    background-color: lightblue;
+    width: 50%;
+    height: 50vh;
+    margin: 50px;
+}
