@@ -3,6 +3,9 @@ var btnSave = document.getElementById('btn-save');
 var todoList = document.getElementById('todo-list');
 var todoInput = document.getElementById('todo-input');
 
+
+
+
 function getTodoList(){
   if(localStorage.getItem('todos') !== null){
     return JSON.parse(localStorage.getItem('todos'));
@@ -10,27 +13,28 @@ function getTodoList(){
   return [];
 }
 
-var todoStorageList = getTodoList();
 loadStoredTodo();
 
 
  function loadStoredTodo(){
       var todoStorageList = getTodoList();
-      console.log(todoStorageList.length);
       if(todoStorageList.length !== 0){
         for(var i=0;i < todoStorageList.length;i++){
-            createTodo(todoStorageList[i][Object.keys(todoStorageList[i])[0]]);
+            createTodoFromStorage(todoStorageList[i][Object.keys(todoStorageList[i])[0]]);
         }
       } 
 }
 
 
+function createTodoFromStorage(message){
+    todoList.insertBefore(createTodoDiv(message),todoList.firstElementChild);
+}
 
 
 function createTodoDiv(message){
       var mainDiv = document.createElement('div');
       var count =  todoList.childElementCount + 1;
-      mainDiv.id = 'todo' + count;
+      mainDiv.id = 'todo' + message;
       mainDiv.className = 'todo-item-container';
 
       var innerDiv = document.createElement('div');
@@ -101,9 +105,14 @@ function editDoneTodo(e){
 
 
 function removeTodo(e){
+    var todoStorageList = getTodoList();
+    var todoId = e.target.parentElement.parentElement.parentElement.id;
+    todoStorageList = todoStorageList.filter(function(item){
+      console.log(Object.keys(item)[0] !== todoId);
+       return Object.keys(item)[0] !== todoId;
+      });
+    localStorage.setItem('todos', JSON.stringify(todoStorageList));
     e.target.parentElement.parentElement.parentElement.remove();
-
-
 }
 
 
@@ -125,13 +134,12 @@ function createTodo(message){
       alert('todo cannot be empty');
     }
     else{
-
       todoList.insertBefore(createTodoDiv(message),todoList.firstElementChild);
-      count = todoStorageList.length + 1;
-      key = 'todo' + count;
+  
+      key = 'todo' + message;
       todoObj = {};
       todoObj[key] = message;
-
+      var todoStorageList = getTodoList();
       todoStorageList.push(todoObj);
       localStorage.setItem('todos', JSON.stringify(todoStorageList));
       
