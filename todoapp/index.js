@@ -3,9 +3,6 @@ var btnSave = document.getElementById('btn-save');
 var todoList = document.getElementById('todo-list');
 var todoInput = document.getElementById('todo-input');
 
-
-
-
 function getTodoList(){
   if(localStorage.getItem('todos') !== null){
     return JSON.parse(localStorage.getItem('todos'));
@@ -34,7 +31,7 @@ function createTodoFromStorage(message){
 function createTodoDiv(message){
       var mainDiv = document.createElement('div');
       var count =  todoList.childElementCount + 1;
-      mainDiv.id = 'todo' + message;
+      mainDiv.id = 'todo-' + message;
       mainDiv.className = 'todo-item-container';
 
       var innerDiv = document.createElement('div');
@@ -96,9 +93,24 @@ function editDoneTodo(e){
   for(var i=0;i< todoDiv.childNodes.length;i++)
   {
      if(todoDiv.childNodes[i].className === 'todo-item-none'){
-       todoDiv.childNodes[i].firstElementChild.innerText = e.target.parentElement.firstElementChild.value;
+       if(i == 0){
+        var todoStorageList = getTodoList();
+        todoDiv.childNodes[i].firstElementChild.innerText = e.target.parentElement.firstElementChild.value;
         todoDiv.childNodes[i].className = 'todo-item';
         todoDiv.childNodes[i+1].className = 'todo-edit';
+        for(var j = 0 ; j< todoStorageList.length ; j++){
+          if(Object.keys(todoStorageList[j])[0] == e.target.parentElement.parentElement.id){
+            todoStorageList = todoStorageList.filter(function(item){
+              return Object.keys(item)[0] !== Object.keys(todoStorageList[j])[0];
+             });
+            var key = 'todo-' + e.target.parentElement.firstElementChild.value;
+            var todoObj = {};
+            todoObj[key] = e.target.parentElement.firstElementChild.value;
+            todoStorageList.push(todoObj);
+            localStorage.setItem('todos', JSON.stringify(todoStorageList));
+          }
+        }
+       }
      }
   }
 }
@@ -108,7 +120,6 @@ function removeTodo(e){
     var todoStorageList = getTodoList();
     var todoId = e.target.parentElement.parentElement.parentElement.id;
     todoStorageList = todoStorageList.filter(function(item){
-      console.log(Object.keys(item)[0] !== todoId);
        return Object.keys(item)[0] !== todoId;
       });
     localStorage.setItem('todos', JSON.stringify(todoStorageList));
@@ -136,7 +147,7 @@ function createTodo(message){
     else{
       todoList.insertBefore(createTodoDiv(message),todoList.firstElementChild);
   
-      key = 'todo' + message;
+      key = 'todo-' + message;
       todoObj = {};
       todoObj[key] = message;
       var todoStorageList = getTodoList();
